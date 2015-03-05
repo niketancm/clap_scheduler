@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+
 int main ()
 {
   pid_t parent_pid,child_pid,gchild_pid1/* ,gchild_pid2 */;
@@ -9,11 +10,11 @@ int main ()
   parent_pid = (int) getpid();
   printf ("the main program process ID is %d\n", (int) getpid ());
   child_pid = fork ();
-  /* child_pid2 = fork (); */
+
   if (child_pid != 0) 
     {
       printf ("MAIN!!! Child’s process ID is %d\n", (int) child_pid);
-      /* kill(child_pid,SIGSTOP); */
+
     }
   else //This is for the child process
     {
