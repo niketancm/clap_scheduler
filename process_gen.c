@@ -22,9 +22,10 @@ int main ()
       child_pid = (int) getpid();
       printf ("This is the child process, with id: %d \n",child_pid);
 
+      /*Child forking another process, gchild_pid1*/
       gchild_pid1 = fork();
 
-      if(gchild_pid1 != 0) //For grand child process
+      if(gchild_pid1 != 0) //For child process
 	{
 	  printf("The child of %d process is: %d \n", (int) getpid (), gchild_pid1);
 	  printf("This is the child of: %d \n", parent_pid);
@@ -37,9 +38,11 @@ int main ()
 	  printf("My parent is: %d \n", child_pid);
 	  printf("My Grand Parent is: %d \n", parent_pid);
 	}
+
       /*To be executed by Child process*/
       if((int) getpid() == child_pid)
 	{
+	  /* Child forking another process, this time gchild2 */
 	  gchild_pid2 = fork();
 
 	  if(gchild_pid2 != 0) //For grand child process
