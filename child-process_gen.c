@@ -43,7 +43,7 @@ int main ()
 	  //Child process
 	  pids[i] = (int) getpid();
 	  /* sleep(3); */
-	  printf("%d child process, my id is: %d \n", i, pids[i]);
+	  printf("%d child process, my id is: %d, my parent is %d \n", i, pids[i], (int) getppid());
 	  /* printf("My Id is: %d \n",pids[1]); */
 	  exit(0);
 	}
