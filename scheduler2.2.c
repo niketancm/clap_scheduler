@@ -6,14 +6,16 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#inlcude <sys/wait.h>
+#include <sys/wait.h>
 
-#define MAX_PIDS 2
+#define MAX_PIDS 3
+//remember to use pthread mutex for pid_set!!
+int pid_set; 
 
 volatile pid_t *pids;
 int main ()
 {
-  pid_t fork_pid;/* parent_pid, child_pid, child_pid2 *//* , gchild_pid1, gchild_pid2 */;
+  pid_t fork_pid, wait_pid;/* parent_pid, child_pid, child_pid2 *//* , gchild_pid1, gchild_pid2 */;
   /* int i = 0; */
 
 
@@ -21,7 +23,7 @@ int main ()
   /* int process_array[3] = {0,0,0}; */
   /* process_array[0] = (int) getpid(); */
 
-  //This is to stored the pid
+  //This is to stored the pid and the count for number of pids set in the pids array
   pids = mmap(0, MAX_PIDS*sizeof(pid_t), PROT_READ|PROT_WRITE,
               MAP_SHARED | MAP_ANONYMOUS, -1, 0);
   if(!pids)
@@ -42,9 +44,9 @@ int main ()
 	  //Child process
 	  pids[i] = (int) getpid();
 	  /* sleep(3); */
-	  printf("%d child process, my id is: %d\n", i, pids[i]);
+	  printf("%d child process, my id is: %d, going to sleep\n", i, pids[i]);
 	  kill((int) getpid(), SIGSTOP);
-	  printf("Sleeping \n");
+	  printf("woken up from Sleeping \n");
 	  exit(0);
 	}
       else if( fork_pid < 0)
@@ -53,9 +55,16 @@ int main ()
 	}
       else // Parent Process
 	{
-	  waitpid();
-	  printf("Parent!!, my id: %d \n", (int) getpid());
+	  int status;
+	  /* printf("The child id is: %d \n", fork_pid); */
 	  sleep(4);
+	  wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
+	  if(WIFSTOPPED(status))
+	    {
+	      printf("The child %d has gone to sleep \n", pids[i]);
+	    }
+	  printf("Parent!!, my id: %d \n", (int) getpid());
+	  /* sleep(4); */
 	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
 	}
     }
