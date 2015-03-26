@@ -17,7 +17,7 @@ int main ()
 {
   pid_t fork_pid, wait_pid;/* parent_pid, child_pid, child_pid2 *//* , gchild_pid1, gchild_pid2 */;
   /* int i = 0; */
-
+  /* int status[MAX_PIDS]; */
 
   //For scheduling
   /* int process_array[3] = {0,0,0}; */
@@ -55,7 +55,7 @@ int main ()
 	}
       else // Parent Process
 	{
-	  int status;
+	  int status; 
 	  /* printf("The child id is: %d \n", fork_pid); */
 	  sleep(4);
 	  wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
@@ -67,5 +67,33 @@ int main ()
 	  /* sleep(4); */
 	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
 	}
+    }
+  if((int) getpid() == pids[0])
+    {//Schedule the threads.
+      int exited_childs = 0;
+      int count = 1, status;
+      while(1)
+      /* for(i = 1; i < MAX_PIDS; i++) */
+  	{
+	  kill(pids[i], SIGCONT);
+	  wait_pid = waitpid(pids[count], &status, WUNTRACED | WNOHANG);
+  	  if(WIFEXITED(status)) //Check if the child has exited.
+	    {
+	      exited_childs = exited_childs + 1;
+	      continue;
+	    }
+	  else //schedule the threads
+	    {
+	      count = count + 1;
+	      if(count == MAX_PIDS)
+		count = 1;
+	      continue;
+	      /* kill(pids[count], SIGCONT); */
+	      
+	    }
+	  if(exited_childs == MAX_PIDS - 1)
+	    break;
+  	}
+      printf("Finished scheduling. \n");
     }
 }
