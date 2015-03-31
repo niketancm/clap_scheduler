@@ -78,7 +78,7 @@ int main ()
       while(1)
          /* for(i = 1; i < MAX_PIDS; i++) */
       {
-         kill(pids[i], SIGCONT);
+         /* kill(pids[i], SIGCONT); */
          wait_pid = waitpid(pids[count], &status, WUNTRACED | WNOHANG);
          if(WIFEXITED(status)) //Check if the child has exited.
          {
