@@ -68,6 +68,7 @@ int main ()
 	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
 	}
     }
+  //This is to make sure the parent thread executes this below code.
   if((int) getpid() == pids[0])
     {//Schedule the threads.
       int exited_childs = 0;
