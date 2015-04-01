@@ -101,24 +101,6 @@ int main ()
 	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
 	}
     }
-
-  //This is to make sure the following code is run only by parent thread.
-  if((int) getpid() == pids[0])
-    {//Schedule the threads.
-      {
-         int status; 
-         /* printf("The child id is: %d \n", fork_pid); */
-         sleep(4);
-         wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
-         if(WIFSTOPPED(status))
-         {
-            printf("The child %d has gone to sleep \n", pids[i]);
-         }
-         printf("Parent!!, my id: %d \n", (int) getpid());
-         /* sleep(4); */
-         printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
-      }
-   }
   
    //This is to make sure the parent thread executes this below code.
    if((int) getpid() == pids[0])
