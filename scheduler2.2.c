@@ -34,7 +34,6 @@ int main ()
    //set the shared memory variables to zero
    memset((void *)pids, 0, MAX_PIDS*sizeof(pid_t));
 
-<<<<<<< HEAD
   pids[0] = (int) getpid();
   int i;
   for(i = 1; i < MAX_PIDS; i++)
@@ -83,30 +82,11 @@ int main ()
 
 	  exit(0);
 	}
-=======
-   int i;
-   for(i = 1; i < MAX_PIDS; i++)
-   {
-      pids[0] = (int) getpid();
-      fork_pid = fork();
-      if(fork_pid == 0)
-      {
-         //Child process
-         pids[i] = (int) getpid();
-         /* sleep(3); */
-         printf("%d child process, my id is: %d, going to sleep\n", i, pids[i]);
-         kill((int) getpid(), SIGSTOP);
-         printf("woken up from Sleeping \n");
-         exit(0);
-      }
-      
->>>>>>> c7270862236dce1bf1de1edb318c996f876ada7a
       else if( fork_pid < 0)
       {
          printf("Fork failed. \n");
       }
       else // Parent Process
-<<<<<<< HEAD
 	{
 	  int status; 
 	  /* printf("The child id is: %d \n", fork_pid); */
@@ -125,7 +105,6 @@ int main ()
   //This is to make sure the following code is run only by parent thread.
   if((int) getpid() == pids[0])
     {//Schedule the threads.
-=======
       {
          int status; 
          /* printf("The child id is: %d \n", fork_pid); */
@@ -144,7 +123,6 @@ int main ()
    //This is to make sure the parent thread executes this below code.
    if((int) getpid() == pids[0])
    {//Schedule the threads.
->>>>>>> c7270862236dce1bf1de1edb318c996f876ada7a
       int exited_childs = 0;
       int count = 1, status;
       while(1)
