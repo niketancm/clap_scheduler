@@ -34,10 +34,11 @@ int main ()
   //set the shared memory variables to zero
   memset((void *)pids, 0, MAX_PIDS*sizeof(pid_t));
 
+  pids[0] = (int) getpid();
   int i;
   for(i = 1; i < MAX_PIDS; i++)
     {
-      pids[0] = (int) getpid();
+      /* pids[0] = (int) getpid(); */
       fork_pid = fork();
       if(fork_pid == 0)
 	{
@@ -46,7 +47,39 @@ int main ()
 	  /* sleep(3); */
 	  printf("%d child process, my id is: %d, going to sleep\n", i, pids[i]);
 	  kill((int) getpid(), SIGSTOP);
-	  printf("woken up from Sleeping \n");
+
+	  printf("woken up from sleeping for First Time by parent \n");
+	  /* printf("Executing code1 by thread %d \n",i); */
+	  /* printf("Now going to sleep!! \n"); */
+	  /* kill((int) getpid(), SIGSTOP); */
+
+	  /* printf("woken up from sleeping for Second Time by parent \n"); */
+	  /* printf("Executing code2 by thread %d \n",i); */
+	  /* printf("Now going to sleep!! \n"); */
+	  /* kill((int) getpid(), SIGSTOP); */
+
+	  /* printf("woken up from sleeping for Third Time by parent \n"); */
+	  /* printf("Executing code3 by thread %d \n",i); */
+	  /* printf("Now going to sleep!! \n"); */
+	  /* kill((int) getpid(), SIGSTOP); */
+
+	  /* printf("woken up from sleeping for Fourth Time by parent \n"); */
+	  /* printf("Executing code4 by thread %d \n",i); */
+	  /* printf("Now going to sleep!! \n"); */
+	  /* kill((int) getpid(), SIGSTOP); */
+
+	  /* printf("woken up from sleeping for Fifth Time by parent \n"); */
+	  /* printf("Executing code5 by thread %d \n",i); */
+	  /* printf("Now going to sleep!! \n"); */
+	  /* kill((int) getpid(), SIGSTOP); */
+
+	  /* printf("woken up from sleeping for Sixth Time by parent \n"); */
+	  /* printf("Executing code6 by thread %d \n",i); */
+	  /* printf("Now going to sleep!! \n"); */
+	  /* kill((int) getpid(), SIGSTOP); */
+	  
+	  printf("Thread %d Finished work! \n", i);
+
 	  exit(0);
 	}
       else if( fork_pid < 0)
@@ -57,7 +90,7 @@ int main ()
 	{
 	  int status; 
 	  /* printf("The child id is: %d \n", fork_pid); */
-	  sleep(4);
+	  sleep(4); // To sync with the child process for child processes to update its pids.
 	  wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
 	  if(WIFSTOPPED(status))
 	    {
@@ -68,6 +101,8 @@ int main ()
 	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
 	}
     }
+
+  //This is to make sure the following code is run only by parent thread.
   if((int) getpid() == pids[0])
     {//Schedule the threads.
       int exited_childs = 0;
