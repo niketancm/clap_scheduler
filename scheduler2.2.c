@@ -103,32 +103,37 @@ int main ()
     }
   
    //This is to make sure the parent thread executes this below code.
-   if((int) getpid() == pids[0])
+  if((int) getpid() == pids[0])
    {//Schedule the threads.
+      printf("This is the %d thread\n", pids[0]);
       int exited_childs = 0;
       int count = 1, status;
+      
       while(1)
-         /* for(i = 1; i < MAX_PIDS; i++) */
+      /* for(i = 1; i < MAX_PIDS; i++) */
       {
-         /* kill(pids[i], SIGCONT); */
-         wait_pid = waitpid(pids[count], &status, WUNTRACED | WNOHANG);
-         if(WIFEXITED(status)) //Check if the child has exited.
-         {
-            exited_childs = exited_childs + 1;
-            continue;
-         }
-         else //schedule the threads
-         {
-            count = count + 1;
-            if(count == MAX_PIDS)
-               count = 1;
-            continue;
-            /* kill(pids[count], SIGCONT); */
+         //check if the thread is dead!!
+         printf("this thread is dead\n");
+         /*    printf("in the while loop \n"); */
+      /*    /\* kill(pids[i], SIGCONT); *\/ */
+      /*    wait_pid = waitpid(pids[count], &status, WUNTRACED | WNOHANG); */
+      /*    if(WIFEXITED(status)) //Check if the child has exited. */
+      /*    { */
+      /*       exited_childs = exited_childs + 1; */
+      /*       continue; */
+      /*    } */
+      /*    else //schedule the threads */
+      /*    { */
+      /*       count = count + 1; */
+      /*       if(count == MAX_PIDS) */
+      /*          count = 1; */
+      /*       continue; */
+      /*       /\* kill(pids[count], SIGCONT); *\/ */
 	   
-         }
-         if(exited_childs == MAX_PIDS - 1)
-            break;
-      }
-      printf("Finished scheduling. \n");
+      /*    } */
+      /*    if(exited_childs == MAX_PIDS - 1) */
+      /*       break; */
+      /* } */
+      /* printf("Finished scheduling. \n"); */
    }
 }
