@@ -86,11 +86,12 @@ int main ()
       {
          printf("Fork failed. \n");
       }
+      
       else // Parent Process
 	{
 	  int status; 
 	  /* printf("The child id is: %d \n", fork_pid); */
-	  sleep(4); // To sync with the child process for child processes to update its pids.
+	  sleep(4); // wait till the child processes update their pids.
 	  wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
 	  if(WIFSTOPPED(status))
 	    {
@@ -104,23 +105,46 @@ int main ()
   
    //This is to make sure the parent thread executes this below code.
   if((int) getpid() == pids[0])
-   {//Schedule the threads.
+   {
+      //Schedule the threads.
       printf("This is the %d thread\n", pids[0]);
       int exited_childs = 0;
-      int count = 1, status,i = 1;
+      int count = 1, status,pids_count = 1;
       while(1)
       /* for(i = 1; i < MAX_PIDS; i++) */
       {
-         fork_pid = pids[i]
+         fork_pid = pids[pids_count]
          wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
-         if(WIFEXITED(status))
+         
+         //keep the count of childs that are finished.
+         if(WIFEXITED(status)) 
          {
             exited_childs += 1;
-            printf("this thread is dead\n");
-            i = i + 1;
+            printf("this thread is dead %d\n", pids[pids_count]);
+            /* pids_count += 1; */
          }
-         if(i = )
+         //signal the process to continue
+         else
          {
+            kill(pids[pids_count], SIGCONT);
          }
+
+         //check if all the childs are finished.
+         if( exited_childs == (MAX_PIDS-1)) 
+         {
+            break;
+         }
+         
+         pids_count += 1; // Increment the pid counter.
+         //reset the pid counter
+         if(pids_count == MAX_PIDS)
+         {
+            pids_count = 1;
+         }
+      }
+      printf("Finished scheduling \n");
    }
+
+  /* return 0; */
+  exit(0);
 }

@@ -13,7 +13,7 @@ int main()
    {
 
       printf("The value of pid is %d and loop count is %d and i is %d \n" ,pids[i], loop_count, i);
-      i = i + 1;
+      i += 1;
       if(i == MAX_PIDS)
          i = 1;
       loop_count = loop_count + 1;
