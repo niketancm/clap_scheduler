@@ -95,7 +95,7 @@ int main ()
 	  wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
 	  if(WIFSTOPPED(status))
 	    {
-	      printf("The child %d has gone to sleep \n", pids[i]);
+	      printf("-------child %d slept-------- \n", pids[i]);
 	    }
 	  printf("Parent!!, my id: %d \n", (int) getpid());
 	  /* sleep(4); */
@@ -107,27 +107,38 @@ int main ()
   if((int) getpid() == pids[0])
    {
       //Schedule the threads.
-      printf("This is the %d thread\n", pids[0]);
+      printf("In the scheduling part \n", pids[0]);
       int exited_childs = 0;
-      int count = 1, status,pids_count = 1;
-      while(1)
-      /* for(i = 1; i < MAX_PIDS; i++) */
+      int count = 1, status,pids_count = 1, i=1;
+      /* while(1) */
+      printf("Entering for \n");
+      for(i = 1; i < 3; i++)
       {
-         fork_pid = pids[pids_count]
+         printf("-----while------\n");
+         fork_pid = pids[pids_count];
          wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
          
-         //keep the count of childs that are finished.
-         if(WIFEXITED(status)) 
+         /* printf("*************status is %d************\n",status); */
+         if(WIFEXITED(status))
          {
-            exited_childs += 1;
-            printf("this thread is dead %d\n", pids[pids_count]);
+            printf("Parent is awakeing the thread %d\n ", pids[pids_count]);
+            kill(pids[pids_count], SIGCONT);
             /* pids_count += 1; */
          }
-         //signal the process to continue
-         else
+
+         //keep the count of childs that are finished.
+         else if(status == 0)
          {
-            kill(pids[pids_count], SIGCONT);
+            exited_childs += 1;
+            printf("------CHILD DEAD %d------\n" ,pids[pids_count]);
          }
+         //signal the process to continue
+            
+         //signal the process to continue
+         /* else */
+         /* { */
+         /*    kill(pids[pids_count], SIGCONT); */
+         /* } */
 
          //check if all the childs are finished.
          if( exited_childs == (MAX_PIDS-1)) 
@@ -141,6 +152,7 @@ int main ()
          {
             pids_count = 1;
          }
+         /* break; */
       }
       printf("Finished scheduling \n");
    }
