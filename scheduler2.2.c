@@ -49,10 +49,10 @@ int main ()
 	  kill((int) getpid(), SIGSTOP);
 	  printf("woken up from sleeping for First Time by parent \n");
 
-	  printf("Executing code1 by thread %d \n",i);
-	  printf("Now going to sleep!! \n");
-	  kill((int) getpid(), SIGSTOP);
-	  printf("woken up from sleeping for Second Time by parent \n");
+	  /* printf("Executing code1 by thread %d \n",i); */
+	  /* printf("Now going to sleep %d!! \n",(int)getpid()); */
+	  /* kill((int) getpid(), SIGSTOP); */
+	  /* printf("woken up from sleeping for Second Time by parent \n"); */
 
 	  /* printf("Executing code2 by thread %d \n",i); */
 	  /* printf("Now going to sleep!! \n"); */
@@ -109,17 +109,18 @@ int main ()
       //Schedule the threads.
       printf("In the scheduling part \n", pids[0]);
       int exited_childs = 0;
-      int count = 1, status,pids_count = 1, i=1;
-      /* while(1) */
-      printf("Entering for \n");
-      for(i = 1; i < 3; i++)
+      int count = 1, status1,pids_count = 1, i=1;
+      while(1)
+      /* printf("Entering for \n"); */
+      /* for(i = 1; i < 20; i++) */
       {
          printf("-----while------\n");
          fork_pid = pids[pids_count];
-         wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
+         waitpid(fork_pid, &status1, WUNTRACED | WNOHANG);
          
-         /* printf("*************status is %d************\n",status); */
-         if(WIFEXITED(status))
+         printf("*************status is %d************\n",status1);
+         //signal the process to continue
+         if(WIFEXITED(status1))
          {
             printf("Parent is awakeing the thread %d\n ", pids[pids_count]);
             kill(pids[pids_count], SIGCONT);
@@ -127,12 +128,12 @@ int main ()
          }
 
          //keep the count of childs that are finished.
-         else if(status == 0)
+         else if(status1 == 0)
          {
             exited_childs += 1;
+            printf("The exited childs are %d\n" ,exited_childs);
             printf("------CHILD DEAD %d------\n" ,pids[pids_count]);
          }
-         //signal the process to continue
             
          //signal the process to continue
          /* else */
