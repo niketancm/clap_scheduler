@@ -47,33 +47,33 @@ int main ()
 	  /* sleep(3); */
 	  printf("%d child process, my id is: %d, going to sleep\n", i, pids[i]);
 	  kill((int) getpid(), SIGSTOP);
-
 	  printf("woken up from sleeping for First Time by parent \n");
-	  /* printf("Executing code1 by thread %d \n",i); */
-	  /* printf("Now going to sleep!! \n"); */
-	  /* kill((int) getpid(), SIGSTOP); */
 
-	  /* printf("woken up from sleeping for Second Time by parent \n"); */
+	  printf("Executing code1 by thread %d \n",i);
+	  printf("Now going to sleep!! \n");
+	  kill((int) getpid(), SIGSTOP);
+	  printf("woken up from sleeping for Second Time by parent \n");
+
 	  /* printf("Executing code2 by thread %d \n",i); */
 	  /* printf("Now going to sleep!! \n"); */
 	  /* kill((int) getpid(), SIGSTOP); */
-
 	  /* printf("woken up from sleeping for Third Time by parent \n"); */
+
 	  /* printf("Executing code3 by thread %d \n",i); */
 	  /* printf("Now going to sleep!! \n"); */
 	  /* kill((int) getpid(), SIGSTOP); */
-
 	  /* printf("woken up from sleeping for Fourth Time by parent \n"); */
+
 	  /* printf("Executing code4 by thread %d \n",i); */
 	  /* printf("Now going to sleep!! \n"); */
 	  /* kill((int) getpid(), SIGSTOP); */
-
 	  /* printf("woken up from sleeping for Fifth Time by parent \n"); */
+
 	  /* printf("Executing code5 by thread %d \n",i); */
 	  /* printf("Now going to sleep!! \n"); */
 	  /* kill((int) getpid(), SIGSTOP); */
-
 	  /* printf("woken up from sleeping for Sixth Time by parent \n"); */
+
 	  /* printf("Executing code6 by thread %d \n",i); */
 	  /* printf("Now going to sleep!! \n"); */
 	  /* kill((int) getpid(), SIGSTOP); */
