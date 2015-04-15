@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-
+//------------waitpid branch----------------
 #define MAX_PIDS 3
 //remember to use pthread mutex for pid_set!!
 int pid_set; 
