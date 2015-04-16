@@ -92,11 +92,11 @@ int main ()
 	  int status; 
 	  /* printf("The child id is: %d \n", fork_pid); */
 	  sleep(4); // wait till the child processes update their pids.
-	  wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG);
-	  if(WIFSTOPPED(status))
-	    {
-	      printf("-------child %d slept-------- \n", pids[i]);
-	    }
+	  /* wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG); */
+	  /* if(WIFSTOPPED(status)) */
+	  /*   { */
+	  /*     printf("-------child %d slept-------- \n", pids[i]); */
+	  /*   } */
 	  printf("Parent!!, my id: %d \n", (int) getpid());
 	  /* sleep(4); */
 	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
@@ -110,17 +110,17 @@ int main ()
       printf("In the scheduling part \n", pids[0]);
       int exited_childs = 0;
       int count = 1, status1,pids_count = 1, i=1;
-      while(1)
+      /* while(1) */
       /* printf("Entering for \n"); */
-      /* for(i = 1; i < 20; i++) */
+      for(i = 1; i < 20; i++)
       {
          printf("-----while------\n");
          fork_pid = pids[pids_count];
-         waitpid(fork_pid, &status1, WUNTRACED | WNOHANG);
+         waitpid(fork_pid, &status1, WUNTRACED);
          
          printf("*************status is %d************\n",status1);
          //signal the process to continue
-         if(WIFEXITED(status1))
+         if(WIFSTOPPED(status1))
          {
             printf("Parent is awakeing the thread %d\n ", pids[pids_count]);
             kill(pids[pids_count], SIGCONT);
