@@ -9,8 +9,8 @@
 #include <sys/wait.h>
 //------------waitpid branch----------------
 #define MAX_PIDS 3
-//remember to use pthread mutex for pid_set!!
-int pid_set; 
+/* //remember to use pthread mutex for pid_set!! */
+/* int pid_set;  */
 
 volatile pid_t *pids;
 int main ()
