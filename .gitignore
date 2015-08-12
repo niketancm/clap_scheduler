@@ -6,6 +6,7 @@ example2.c
 example3.c
 example4.c
 *.out
+run
 =======
 # Object files
 *.o

@@ -1,19 +1,29 @@
+# CC = gcc
+
+# CFLAGS = -c
+
+# #OBJECTS = list.o list_main.o
+
+# #all: list.o list_main.o
+
+# my_list:list.o list_main.o
+# 	$(CC) -o my_list list.o list_main.o
+
+# list.o:	list.c
+# 	$(CC) $(CFLAGS) -c list.c
+
+# list_main.o: list_main.c
+# 	$(CC) $(CFLAGS) -c list_main.c
+
+# clean:
+# 	$(RM) my_list *.o
+
 CC = gcc
 
-CFLAGS = -c
+all: run
 
-#OBJECTS = list.o list_main.o
-
-#all: list.o list_main.o
-
-my_list:list.o list_main.o
-	$(CC) -o my_list list.o list_main.o
-
-list.o:	list.c
-	$(CC) $(CFLAGS) -c list.c
-
-list_main.o: list_main.c
-	$(CC) $(CFLAGS) -c list_main.c
+run: scheduler2.2.c
+	$(CC) -o run scheduler2.2.c
 
 clean:
-	$(RM) my_list *.o
+	$(RM) run *.o
