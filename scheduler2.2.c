@@ -7,157 +7,99 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-//------------waitpid branch----------------
+
 #define MAX_PIDS 3
-/* //remember to use pthread mutex for pid_set!! */
-/* int pid_set;  */
-
 volatile pid_t *pids;
-int main ()
+
+int main()
 {
-   pid_t fork_pid, wait_pid;/* parent_pid, child_pid, child_pid2 *//* , gchild_pid1, gchild_pid2 */;
-   /* int i = 0; */
-   /* int status[MAX_PIDS]; */
 
-   //For scheduling
-   /* int process_array[3] = {0,0,0}; */
-   /* process_array[0] = (int) getpid(); */
-
-   //This is to stored the pid and the count for number of pids set in the pids array
-   pids = mmap(0, MAX_PIDS*sizeof(pid_t), PROT_READ|PROT_WRITE,
-               MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-   if(!pids)
-   {
+  //------------- Shared Memory ----------------- //
+  pids = mmap(0, MAX_PIDS*sizeof(pid_t), PROT_READ|PROT_WRITE,
+	      MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+  if(!pids)
+    {
       perror("Failed to assign shared memory");
       exit(1);
-   }
-   //set the shared memory variables to zero
-   memset((void *)pids, 0, MAX_PIDS*sizeof(pid_t));
+    }
+  //set the shared memory variables to zero
+  memset((void *)pids, 0, MAX_PIDS*sizeof(pid_t));
+  
+  //------------- Shared Memory ----------------- //
 
-  pids[0] = (int) getpid();
+  pids[0] = (int) getpid();  //store the parent process id.
   int i;
-  for(i = 1; i < MAX_PIDS; i++)
+  pid_t fork_pid;
+  
+  //Parent creating child processes
+  for (i = 1; i < MAX_PIDS; i++) 
     {
-      /* pids[0] = (int) getpid(); */
       fork_pid = fork();
-      if(fork_pid == 0)
+ 
+      if(fork_pid == 0) //child process code!!
 	{
-	  //Child process
 	  pids[i] = (int) getpid();
-	  /* sleep(3); */
-	  printf("%d child process, my id is: %d, going to sleep\n", i, pids[i]);
+	  printf("Child process, my id is: %d \n", pids[i]);
+	  printf("Child %d going to sleep \n",pids[i]);
 	  kill((int) getpid(), SIGSTOP);
-	  printf("woken up from sleeping for First Time by parent \n");
-
-	  /* printf("Executing code1 by thread %d \n",i); */
-	  /* printf("Now going to sleep %d!! \n",(int)getpid()); */
-	  /* kill((int) getpid(), SIGSTOP); */
-	  /* printf("woken up from sleeping for Second Time by parent \n"); */
-
-	  /* printf("Executing code2 by thread %d \n",i); */
-	  /* printf("Now going to sleep!! \n"); */
-	  /* kill((int) getpid(), SIGSTOP); */
-	  /* printf("woken up from sleeping for Third Time by parent \n"); */
-
-	  /* printf("Executing code3 by thread %d \n",i); */
-	  /* printf("Now going to sleep!! \n"); */
-	  /* kill((int) getpid(), SIGSTOP); */
-	  /* printf("woken up from sleeping for Fourth Time by parent \n"); */
-
-	  /* printf("Executing code4 by thread %d \n",i); */
-	  /* printf("Now going to sleep!! \n"); */
-	  /* kill((int) getpid(), SIGSTOP); */
-	  /* printf("woken up from sleeping for Fifth Time by parent \n"); */
-
-	  /* printf("Executing code5 by thread %d \n",i); */
-	  /* printf("Now going to sleep!! \n"); */
-	  /* kill((int) getpid(), SIGSTOP); */
-	  /* printf("woken up from sleeping for Sixth Time by parent \n"); */
-
-	  /* printf("Executing code6 by thread %d \n",i); */
-	  /* printf("Now going to sleep!! \n"); */
-	  /* kill((int) getpid(), SIGSTOP); */
-	  
-	  printf("Thread %d Finished work! \n", i);
-
+	  printf("Parent woke me up \n");
 	  exit(0);
 	}
+
       else if( fork_pid < 0)
-      {
-         printf("Fork failed. \n");
-      }
-      
-      else // Parent Process
 	{
-	  int status; 
-	  /* printf("The child id is: %d \n", fork_pid); */
-	  sleep(4); // wait till the child processes update their pids.
-	  /* wait_pid = waitpid(fork_pid, &status, WUNTRACED | WNOHANG); */
-	  /* if(WIFSTOPPED(status)) */
-	  /*   { */
-	  /*     printf("-------child %d slept-------- \n", pids[i]); */
-	  /*   } */
-	  printf("Parent!!, my id: %d \n", (int) getpid());
-	  /* sleep(4); */
-	  printf("I am Parent, my %d child is:%d \n", i, pids[i]);	      
+	  printf("Fork failed!!\n");
+	}
+
+      else //parent process code
+	{
+	  int status;
+	  printf("In the parent process, my id is %d \n", (int)getpid());
+	  //wait till the child processes update their pids
+	  waitpid(pids[i], &status, WUNTRACED);
+	  printf("*************status is %d************\n",status);
+	  if(WIFSTOPPED(status))
+	    {
+	      printf("Parent has detected the process %d has stopped \n", pids[i]);
+	      /* printf("Awakening the process \n"); */
+	      /* kill(pids[i], SIGCONT); */
+	    }
+	  else if(WIFEXITED(status))
+	    {
+	      printf("Child finished execution!! \n");
+	    }
+	  
+	}      
+    }
+ 
+  //to schedule the threads!!
+  if((int) getpid() == pids[0])  
+    {
+      int status;
+      bool schedule = true;
+      //yet to be implemented!!
+      printf("\n Scheduling the threads!! \n");
+      /* for (i = 1; i < MAX_PIDS; i++) */
+      /* 	{ */
+      /* 	  printf("Awakening the process:%d \n", pids[i]); */
+      /* 	  kill(pids[i], SIGCONT); */
+      
+      /* 	  waitpid(pids[i], &status, WUNTRACED); */
+      /* 	  printf("*************status is %d************\n",status); */
+      /* 	  if(WIFEXITED(status)) */
+      /* 	    { */
+      /* 	      printf("Child %d finished execution!! \n",pids[i]); */
+      /* 	    } */
+      /* 	} */
+      while(schedule)
+	{
+	  schedule_a_thread();
+	  if(exited_p == MAX_PIDS)
+	    {
+	      printf("All the threads have been scheduled!! \n");
+	    }
 	}
     }
-  
-   //This is to make sure the parent thread executes this below code.
-  if((int) getpid() == pids[0])
-   {
-      //Schedule the threads.
-      printf("In the scheduling part \n", pids[0]);
-      int exited_childs = 0;
-      int count = 1, status1,pids_count = 1, i=1;
-      /* while(1) */
-      /* printf("Entering for \n"); */
-      for(i = 1; i < 20; i++)
-      {
-         printf("-----while------\n");
-         fork_pid = pids[pids_count];
-         waitpid(fork_pid, &status1, WUNTRACED);
-         
-         printf("*************status is %d************\n",status1);
-         //signal the process to continue
-         if(WIFSTOPPED(status1))
-         {
-            printf("Parent is awakeing the thread %d\n ", pids[pids_count]);
-            kill(pids[pids_count], SIGCONT);
-            /* pids_count += 1; */
-         }
 
-         //keep the count of childs that are finished.
-         else if(status1 == 0)
-         {
-            exited_childs += 1;
-            printf("The exited childs are %d\n" ,exited_childs);
-            printf("------CHILD DEAD %d------\n" ,pids[pids_count]);
-         }
-            
-         //signal the process to continue
-         /* else */
-         /* { */
-         /*    kill(pids[pids_count], SIGCONT); */
-         /* } */
-
-         //check if all the childs are finished.
-         if( exited_childs == (MAX_PIDS-1)) 
-         {
-            break;
-         }
-         
-         pids_count += 1; // Increment the pid counter.
-         //reset the pid counter
-         if(pids_count == MAX_PIDS)
-         {
-            pids_count = 1;
-         }
-         /* break; */
-      }
-      printf("Finished scheduling \n");
-   }
-
-  /* return 0; */
-  exit(0);
+  return 0;
 }
